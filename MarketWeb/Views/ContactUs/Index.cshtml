@@ -1,0 +1,53 @@
+@model IEnumerable<MarketWeb.Models.ViewModels.ContactUs>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Names)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Emails)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phones)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Contents)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Names)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Emails)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phones)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contents)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ContactUsID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ContactUsID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ContactUsID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,106 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+
+
+
+<h2>Index</h2>
+
+@{
+    if (HttpContextAccessor.HttpContext.Session.GetString("Cart") != null)
+    {
+        using (Html.BeginForm("UpdateCart", "ShoppingCart", FormMethod.Post))
+        {
+
+        <table class="table table-hover">
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Sub Total</th>
+            </tr>
+
+            @foreach (var cart in @HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Cart>>("Cart"))
+          {
+            <tr>
+                <td>
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@cart.Product.ProductID">@cart.Product.ProductName</a>
+                </td>
+                <td>$@cart.Product.Price</td>
+                <td>
+                    <input type="number" name="quantity" id="quantity" class="form-control" required value="@cart.Quantity" />
+                    &nbsp;<span id="errmsg"></span>
+                </td>
+                <td>$@(String.Format("{0:N0}", cart.Product.Price * cart.Quantity))</td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", "ShoppingCart", new { id = cart.Product.ProductID },
+                        new { onClick = "return confirm ('Are you sure you want to delete this?');" })
+                </td>
+            </tr>
+
+            }
+
+        <tr style="color:red;font-size:20px">
+            <td colspan="3">TOTAL</td>
+            <td>
+                @{
+                        List<Cart> temp = HttpContextAccessor.HttpContext.Session.GetObjectFromJson<List<Cart>>("Cart");
+                        var total = String.Format("{0:N0}", temp.Sum(x => x.Quantity * x.Product.Price));
+                }
+
+                $@total
+            </td>
+        </tr>
+    </table>
+
+    <br />
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4 col-xs-4">
+            <a class="btn btn-default" asp-controller="Products" asp-action="Index">Continue Shopping</a>
+        </div>
+        <div class="col-md-4 col-xs-4">
+            <input type="submit" class="btn btn-default" value="Update Cart" />
+        </div>
+        <div class="col-md-4 col-xs-4">
+            <a class="btn btn-default" asp-controller="ShoppingCart" asp-action="CheckOut">CheckOut</a>
+        </div>
+
+    </div>
+
+
+                  }
+            }
+
+        else
+           {
+                <h1> No Items in Your Cart!!!</h1>
+                <br />
+                @Html.ActionLink("Start Shopping?", "Index", "Products")
+           }
+}
+
+
+
+
+@*<script type="text/javascript" src="~/lib/jquery/dist/jquery.js">
+        $(document).ready(function () {
+            $("#quantity").keypress(function (e){
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+
+                    $("#errmsg").html("Enter digits only!").show().fadeOut("slow");
+                    return false;
+                }
+
+            });
+
+        });
+    </script>*@
+
+
+
+
+
